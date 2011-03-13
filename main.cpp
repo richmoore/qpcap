@@ -1,4 +1,4 @@
-#include <QApplication>
+#include <QCoreApplication>
 #include <QByteArray>
 #include <QDebug>
 
@@ -6,7 +6,7 @@
 
 int main(int argc, char **argv)
 {
-    QApplication app(argc, argv);
+    QCoreApplication app(argc, argv);
 
     QPcap pcap;
     
@@ -30,12 +30,12 @@ int main(int argc, char **argv)
     if (!ok) {
         qDebug() << "bad filter failed (good!), " << pcap.errorString();
     }
-
+#if 0
     ok = pcap.setFilter( QString("host xmelegance.org and port 80") );
     if (!ok) {
         qDebug() << "filter failed, " << pcap.errorString();
     }
-
+#endif
     for (int i=0; i < 3; i++ ) {
         ok = pcap.readPacket();
         if (!ok) {
@@ -49,5 +49,10 @@ int main(int argc, char **argv)
         QByteArray bytes( (const char *)packet, pcap.capturedLength() );
         qDebug() << bytes.toHex();
     }
+
+    pcap.start();
+
+    app.exec();
+
     pcap.close();
 }

@@ -1,4 +1,5 @@
 #include <QDebug>
+#include <QSocketNotifier>
 
 #include <pcap.h>
 
@@ -12,8 +13,9 @@ struct QPcapPrivate
     QString lasterr;
     pcap_t *handle;
     bpf_program filter;
-    pcap_pkthdr header;
+    const pcap_pkthdr *header;
     const u_char *packet;
+    QSocketNotifier *notifier;
 };
 
 QPcap::QPcap( QObject *parent )
@@ -21,7 +23,9 @@ QPcap::QPcap( QObject *parent )
 {
     d = new QPcapPrivate;
     d->handle = 0;
+    d->header = 0;
     d->packet = 0;
+    d->notifier = 0;
 }
 
 QPcap::~QPcap()
@@ -68,6 +72,8 @@ bool QPcap::close()
 {
     if (!isValid())
         return false;
+    if (d->notifier)
+        stop();
 
     pcap_close(d->handle);
     d->handle = 0;
@@ -89,10 +95,53 @@ bool QPcap::setFilter( const QString &filterexp )
     return true;
 }
 
+void QPcap::packet_callback( uchar *self, const pcap_pkthdr *header, const uchar *packet )
+{
+    qDebug() << "packet_callback";
+
+    QPcap *qpcap = reinterpret_cast<QPcap *>(self);
+    qpcap->d->header = header;
+    qpcap->d->packet = packet;
+
+    qpcap->packetReady();
+}
+
+void QPcap::dataAvailable()
+{
+    pcap_dispatch( d->handle, -1 /* all packets*/, (pcap_handler)&QPcap::packet_callback, (uchar *)this );
+}
+
+
+void QPcap::start()
+{
+    if (!isValid())
+        return;
+
+    int fd = pcap_get_selectable_fd(d->handle);
+    d->notifier = new QSocketNotifier( fd, QSocketNotifier::Read, this );
+    connect( d->notifier, SIGNAL(activated(int)), this, SLOT(dataAvailable()) );
+    d->notifier->setEnabled(true);
+}
+
+void QPcap::stop()
+{
+    if (!isValid())
+        return;
+
+    pcap_breakloop( d->handle );
+    delete d->notifier;
+    d->notifier = 0;
+}
+
 bool QPcap::readPacket()
 {
-    d->packet = pcap_next( d->handle, &d->header );
-    return (d->packet != 0);
+    if (!isValid())
+        return false;
+
+    int result = pcap_next_ex( d->handle, const_cast<pcap_pkthdr **>(&d->header), &d->packet );
+    if (result < 1)
+        return false;
+    return true;
 }
 
 const u_char *QPcap::packet() const
@@ -102,16 +151,16 @@ const u_char *QPcap::packet() const
 
 timeval QPcap::timeStamp() const
 {
-    return d->header.ts;
+    return d->header->ts;
 }
 
 uint QPcap::capturedLength() const
 {
-    return d->header.caplen;
+    return d->header->caplen;
 }
 
 uint QPcap::packetLength() const
 {
-    return d->header.len;
+    return d->header->len;
 }
 

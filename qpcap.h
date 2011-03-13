@@ -24,6 +24,9 @@ public:
 
     bool readPacket();
 
+    void start();
+    void stop();
+
     bool setFilter( const QString &filter );
 
     // Information about the latest packet
@@ -31,6 +34,15 @@ public:
     uint capturedLength() const;
     uint packetLength() const;
     const uchar *packet() const;
+
+signals:
+    void packetReady();
+
+private slots:
+    void dataAvailable();
+
+private:
+    static void packet_callback( uchar *self, const struct pcap_pkthdr *header, const uchar *packet );
 
 private:
     struct QPcapPrivate *d;
