@@ -1,12 +1,16 @@
 #ifndef QPCAP_H
 #define QPCAP_H
 
+#include <QObject>
 #include <QString>
 
-class QPcap
+#include <sys/time.h>
+
+class QPcap : public QObject
 {
+    Q_OBJECT
 public:
-    QPcap();
+    QPcap( QObject *parent=0 );
     ~QPcap();
 
     bool isValid() const;
@@ -26,7 +30,7 @@ public:
     timeval timeStamp() const;
     uint capturedLength() const;
     uint packetLength() const;
-    const u_char *packet() const;
+    const uchar *packet() const;
 
 private:
     struct QPcapPrivate *d;

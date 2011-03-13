@@ -16,7 +16,8 @@ struct QPcapPrivate
     const u_char *packet;
 };
 
-QPcap::QPcap()
+QPcap::QPcap( QObject *parent )
+    : QObject(parent)
 {
     d = new QPcapPrivate;
     d->handle = 0;
