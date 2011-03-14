@@ -6,6 +6,23 @@
 
 #include <sys/time.h>
 
+class QPcapHeader
+{
+public:
+    QPcapHeader();
+    ~QPcapHeader();
+
+    timeval timeStamp() const;
+    uint capturedLength() const;
+    uint packetLength() const;
+
+private:
+    void setHeader( const struct pcap_pkthdr *header );
+
+    const struct pcap_pkthdr *header;
+    friend class QPcap;
+};
+
 class QPcap : public QObject
 {
     Q_OBJECT
@@ -29,10 +46,7 @@ public:
 
     bool setFilter( const QString &filter );
 
-    // Information about the latest packet
-    timeval timeStamp() const;
-    uint capturedLength() const;
-    uint packetLength() const;
+    QPcapHeader header() const;
     const uchar *packet() const;
 
 signals:

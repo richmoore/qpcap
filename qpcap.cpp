@@ -13,17 +13,46 @@ struct QPcapPrivate
     QString lasterr;
     pcap_t *handle;
     bpf_program filter;
-    const pcap_pkthdr *header;
+    QPcapHeader header;
     const u_char *packet;
     QSocketNotifier *notifier;
 };
+
+QPcapHeader::QPcapHeader()
+{
+}
+
+QPcapHeader::~QPcapHeader()
+{
+    // We don't own the header
+}
+
+void QPcapHeader::setHeader( const struct pcap_pkthdr *header )
+{
+    this->header = header;
+}
+
+timeval QPcapHeader::timeStamp() const
+{
+    return header->ts;
+}
+
+uint QPcapHeader::capturedLength() const
+{
+    return header->caplen;
+}
+
+uint QPcapHeader::packetLength() const
+{
+    return header->len;
+}
+
 
 QPcap::QPcap( QObject *parent )
     : QObject(parent)
 {
     d = new QPcapPrivate;
     d->handle = 0;
-    d->header = 0;
     d->packet = 0;
     d->notifier = 0;
 }
@@ -100,7 +129,7 @@ void QPcap::packet_callback( uchar *self, const pcap_pkthdr *header, const uchar
     qDebug() << "packet_callback";
 
     QPcap *qpcap = reinterpret_cast<QPcap *>(self);
-    qpcap->d->header = header;
+    qpcap->d->header.setHeader( header );
     qpcap->d->packet = packet;
 
     qpcap->packetReady();
@@ -138,10 +167,18 @@ bool QPcap::readPacket()
     if (!isValid())
         return false;
 
-    int result = pcap_next_ex( d->handle, const_cast<pcap_pkthdr **>(&d->header), &d->packet );
+    pcap_pkthdr *header;
+    int result = pcap_next_ex( d->handle, &header, &d->packet );
     if (result < 1)
         return false;
+    d->header.setHeader(header);
+
     return true;
+}
+
+QPcapHeader QPcap::header() const
+{
+    return d->header;
 }
 
 const u_char *QPcap::packet() const
@@ -149,18 +186,4 @@ const u_char *QPcap::packet() const
     return d->packet;
 }
 
-timeval QPcap::timeStamp() const
-{
-    return d->header->ts;
-}
-
-uint QPcap::capturedLength() const
-{
-    return d->header->caplen;
-}
-
-uint QPcap::packetLength() const
-{
-    return d->header->len;
-}
 

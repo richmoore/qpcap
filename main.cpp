@@ -43,10 +43,11 @@ int main(int argc, char **argv)
             //return 1;
         }
 
-        qDebug() << "Got one packet, length is " << pcap.packetLength() << "captured " << pcap.capturedLength();
+        QPcapHeader header = pcap.header();
+        qDebug() << "Got one packet, length is " << header.packetLength() << "captured " << header.capturedLength();
 
         const u_char *packet = pcap.packet();
-        QByteArray bytes( (const char *)packet, pcap.capturedLength() );
+        QByteArray bytes( (const char *)packet, header.capturedLength() );
         qDebug() << bytes.toHex();
     }
 
