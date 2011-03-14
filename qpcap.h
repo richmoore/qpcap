@@ -44,6 +44,9 @@ public:
 
     bool setFilter( const QString &filter );
 
+    bool isBlocking() const;
+    void setBlocking( bool enable );
+
     QPcapHeader header() const;
     const uchar *packet() const;
 

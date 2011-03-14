@@ -119,6 +119,16 @@ bool QPcap::setFilter( const QString &filterexp )
     return true;
 }
 
+bool QPcap::isBlocking() const
+{
+    return !pcap_getnonblock( d->handle, d->errbuf );
+}
+
+void QPcap::setBlocking( bool enable )
+{
+    pcap_setnonblock( d->handle, !enable, d->errbuf );
+}
+
 void QPcap::packet_callback( uchar *self, const pcap_pkthdr *header, const uchar *packet )
 {
     qDebug() << "packet_callback";
