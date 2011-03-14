@@ -27,11 +27,6 @@ QPcapHeader::~QPcapHeader()
     // We don't own the header
 }
 
-void QPcapHeader::setHeader( const struct pcap_pkthdr *header )
-{
-    this->header = header;
-}
-
 timeval QPcapHeader::timeStamp() const
 {
     return header->ts;
@@ -129,7 +124,7 @@ void QPcap::packet_callback( uchar *self, const pcap_pkthdr *header, const uchar
     qDebug() << "packet_callback";
 
     QPcap *qpcap = reinterpret_cast<QPcap *>(self);
-    qpcap->d->header.setHeader( header );
+    qpcap->d->header.header = header;
     qpcap->d->packet = packet;
 
     qpcap->packetReady();
@@ -171,7 +166,7 @@ bool QPcap::readPacket()
     int result = pcap_next_ex( d->handle, &header, &d->packet );
     if (result < 1)
         return false;
-    d->header.setHeader(header);
+    d->header.header = header;
 
     return true;
 }

@@ -17,8 +17,6 @@ public:
     uint packetLength() const;
 
 private:
-    void setHeader( const struct pcap_pkthdr *header );
-
     const struct pcap_pkthdr *header;
     friend class QPcap;
 };
