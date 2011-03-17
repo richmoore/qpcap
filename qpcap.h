@@ -34,7 +34,7 @@ public:
 
     QString lookupDevice();
 
-    bool open( const QString &dev, int snaplen, bool promisc );
+    bool open( const QString &dev, int snaplen=65536, bool promisc=true );
     bool close();
 
     bool readPacket();
