@@ -12,6 +12,8 @@ public:
     QPcapHeader();
     ~QPcapHeader();
 
+    bool isValid() const;
+
     timeval timeStamp() const;
     uint capturedLength() const;
     uint packetLength() const;

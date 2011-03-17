@@ -10,5 +10,5 @@ INCLUDEPATH += .
 LIBS += -lpcap
 
 # Input
-HEADERS += qpcap.h
-SOURCES += main.cpp qpcap.cpp
+HEADERS += qpcap.h qpcappacket.h
+SOURCES += main.cpp qpcap.cpp qpcappacket.cpp

@@ -18,13 +18,23 @@ struct QPcapPrivate
     QSocketNotifier *notifier;
 };
 
+//
+// Pcap header
+//
+
 QPcapHeader::QPcapHeader()
+    : header(0)
 {
 }
 
 QPcapHeader::~QPcapHeader()
 {
     // We don't own the header
+}
+
+bool QPcapHeader::isValid() const
+{
+    return (0 != header);
 }
 
 timeval QPcapHeader::timeStamp() const
@@ -42,6 +52,9 @@ uint QPcapHeader::packetLength() const
     return header->len;
 }
 
+//
+// pcap api
+//
 
 QPcap::QPcap( QObject *parent )
     : QObject(parent)
