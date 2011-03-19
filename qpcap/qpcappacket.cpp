@@ -46,7 +46,7 @@ QString QPcapEthernetPacket::destHost() const
 ushort QPcapEthernetPacket::frameType() const
 {
     const ether_header *ether = reinterpret_cast<const ether_header *>(packet);
-    return ether->ether_type;
+    return ntohs(ether->ether_type);
 }
 
 bool QPcapEthernetPacket::isIpPacket() const
