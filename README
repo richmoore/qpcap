@@ -1,0 +1,22 @@
+QPcap - A Qt wrapper for libpcap
+================================
+
+This library provides a Qt based API around libpcap.
+
+Examples
+========
+
+Note that as with anything using raw sockets, these examples (and anything
+else using this library) must be run as root.
+
+demo1   Uses the Qt signal based api to print information about packets.
+demo2   Uses the synchronous API to read a few packets.
+
+
+Building
+========
+
+qmake
+make
+
+(c) 2011 Richard Moore, rich@kde.org
