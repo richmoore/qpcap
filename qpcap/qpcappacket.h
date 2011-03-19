@@ -42,6 +42,8 @@ public:
     int version() const;
     int headerLength() const;
 
+    int protocol() const;
+
     QHostAddress source() const;
     QHostAddress dest() const;
 

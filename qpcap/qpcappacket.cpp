@@ -100,6 +100,12 @@ int QPcapIpPacket::headerLength() const
     return ip->ihl;
 }
 
+int QPcapIpPacket::protocol() const
+{
+    const iphdr *ip = reinterpret_cast<const iphdr *>(packet);
+    return ip->protocol;
+}
+
 QHostAddress QPcapIpPacket::source() const
 {
     const iphdr *ip = reinterpret_cast<const iphdr *>(packet);
