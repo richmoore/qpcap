@@ -1,11 +1,47 @@
+// -*- c++ -*-
+
 #ifndef QPCAPPACKET_H_H
 #define QPCAPPACKET_H_H
 
-class QPcapPacket
+#include <QHostAddress>
+#include <QString>
+
+class QPcapIpPacket;
+
+class QPcapEthernetPacket
 {
 public:
-    QPcapPacket();
-    ~QPcapPacket();
+    QPcapEthernetPacket();
+    QPcapEthernetPacket( const uchar *packet );
+
+    ~QPcapEthernetPacket();
+
+    QString sourceHost() const;
+    QString destHost() const;
+    ushort frameType() const;
+
+    QPcapIpPacket ipPacket() const;
+
+private:
+    const uchar *packet;
+};
+
+class QPcapIpPacket
+{
+public:
+    QPcapIpPacket();
+    QPcapIpPacket( const uchar *packet );
+
+    ~QPcapIpPacket();
+
+    int version() const;
+    int headerLength() const;
+
+    QHostAddress source() const;
+    QHostAddress dest() const;
+
+private:
+    const uchar *packet;
 };
 
 #endif // QPCAPPACKET_H_H

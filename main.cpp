@@ -3,6 +3,7 @@
 #include <QDebug>
 
 #include "qpcap.h"
+#include "qpcappacket.h"
 
 int main(int argc, char **argv)
 {
@@ -30,12 +31,13 @@ int main(int argc, char **argv)
     if (!ok) {
         qDebug() << "bad filter failed (good!), " << pcap.errorString();
     }
-#if 0
-    ok = pcap.setFilter( QString("host xmelegance.org and port 80") );
+
+    //ok = pcap.setFilter( QString("host xmelegance.org and port 80") );
+    ok = pcap.setFilter( QString("ip") );
     if (!ok) {
         qDebug() << "filter failed, " << pcap.errorString();
     }
-#endif
+
     for (int i=0; i < 3; i++ ) {
         ok = pcap.readPacket();
         if (!ok) {
@@ -47,6 +49,15 @@ int main(int argc, char **argv)
         qDebug() << "Got one packet, length is " << header.packetLength() << "captured " << header.capturedLength();
 
         const u_char *packet = pcap.packet();
+
+        QPcapEthernetPacket ether(packet);
+        qDebug() << "Source:" << ether.sourceHost();
+        qDebug() << "Dest:" << ether.destHost();
+
+        QPcapIpPacket ip = ether.ipPacket();
+        qDebug() << "Source:" << ip.source();
+        qDebug() << "Dest:" << ip.dest();
+
         QByteArray bytes( (const char *)packet, header.capturedLength() );
         qDebug() << bytes.toHex();
     }

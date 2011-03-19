@@ -9,6 +9,7 @@
 class QPcapHeader
 {
 public:
+    QPcapHeader( const struct pcap_pkthdr *header );
     QPcapHeader();
     ~QPcapHeader();
 

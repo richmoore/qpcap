@@ -8,6 +8,7 @@ DEPENDPATH += .
 INCLUDEPATH += .
 
 LIBS += -lpcap
+QT += network
 
 # Input
 HEADERS += qpcap.h qpcappacket.h
