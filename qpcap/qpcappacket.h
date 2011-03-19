@@ -16,6 +16,8 @@ public:
 
     ~QPcapEthernetPacket();
 
+    bool isValid() const;
+
     QString sourceHost() const;
     QString destHost() const;
     ushort frameType() const;
@@ -33,6 +35,8 @@ public:
     QPcapIpPacket( const uchar *packet );
 
     ~QPcapIpPacket();
+
+    bool isValid() const;
 
     int version() const;
     int headerLength() const;

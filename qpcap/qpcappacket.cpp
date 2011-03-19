@@ -21,6 +21,12 @@ QPcapEthernetPacket::~QPcapEthernetPacket()
     // We don't own the packet
 }
 
+bool QPcapEthernetPacket::isValid() const
+{
+    return (0 != packet);
+}
+
+
 QString QPcapEthernetPacket::sourceHost() const
 {
     const ether_header *ether = reinterpret_cast<const ether_header *>(packet);
@@ -67,6 +73,11 @@ QPcapIpPacket::QPcapIpPacket( const uchar *pkt )
 QPcapIpPacket::~QPcapIpPacket()
 {
     // We don't own the packet
+}
+
+bool QPcapIpPacket::isValid() const
+{
+    return (0 != packet);
 }
 
 int QPcapIpPacket::version() const
