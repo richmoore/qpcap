@@ -49,8 +49,16 @@ ushort QPcapEthernetPacket::frameType() const
     return ether->ether_type;
 }
 
-QPcapIpPacket QPcapEthernetPacket::ipPacket() const
+bool QPcapEthernetPacket::isIpPacket() const
 {
+    return ETHERTYPE_IP == frameType();
+}
+
+QPcapIpPacket QPcapEthernetPacket::toIpPacket() const
+{
+    if (frameType() != ETHERTYPE_IP )
+        return QPcapIpPacket();
+
     const uchar *payload = packet + sizeof(ether_header);
     return QPcapIpPacket(payload);
 }

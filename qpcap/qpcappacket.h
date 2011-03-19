@@ -22,7 +22,8 @@ public:
     QString destHost() const;
     ushort frameType() const;
 
-    QPcapIpPacket ipPacket() const;
+    bool isIpPacket() const;
+    QPcapIpPacket toIpPacket() const;
 
 private:
     const uchar *packet;

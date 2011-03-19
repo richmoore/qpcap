@@ -19,8 +19,10 @@ void PacketPrinter::print( const uchar *packet )
     qDebug() << "Source:" << ether.sourceHost();
     qDebug() << "Dest:" << ether.destHost();
 
-    QPcapIpPacket ip = ether.ipPacket();
-    qDebug() << "== IP ==";
-    qDebug() << "Source:" << ip.source();
-    qDebug() << "Dest:" << ip.dest();
+    if (ether.isIpPacket()) {
+        QPcapIpPacket ip = ether.toIpPacket();
+        qDebug() << "== IP ==";
+        qDebug() << "Source:" << ip.source();
+        qDebug() << "Dest:" << ip.dest();
+    }
 }
