@@ -11,5 +11,5 @@ LIBS += -lpcap
 QT += network
 
 # Input
-HEADERS += qpcap.h qpcappacket.h
-SOURCES += main.cpp qpcap.cpp qpcappacket.cpp
+HEADERS += qpcap.h qpcappacket.h packetprinter.h
+SOURCES += main.cpp qpcap.cpp qpcappacket.cpp packetprinter.cpp

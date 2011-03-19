@@ -55,6 +55,7 @@ public:
 
 signals:
     void packetReady();
+    void packetReady( const uchar *packet );
 
 private slots:
     void dataAvailable();

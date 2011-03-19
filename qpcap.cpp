@@ -149,13 +149,12 @@ void QPcap::setBlocking( bool enable )
 
 void QPcap::packet_callback( uchar *self, const pcap_pkthdr *header, const uchar *packet )
 {
-    qDebug() << "packet_callback";
-
     QPcap *qpcap = reinterpret_cast<QPcap *>(self);
     qpcap->d->header.header = header;
     qpcap->d->packet = packet;
 
     qpcap->packetReady();
+    qpcap->packetReady( qpcap->d->packet );
 }
 
 void QPcap::dataAvailable()

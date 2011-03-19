@@ -5,6 +5,8 @@
 #include "qpcap.h"
 #include "qpcappacket.h"
 
+#include "packetprinter.h"
+
 int main(int argc, char **argv)
 {
     QCoreApplication app(argc, argv);
@@ -61,6 +63,9 @@ int main(int argc, char **argv)
         QByteArray bytes( (const char *)packet, header.capturedLength() );
         qDebug() << bytes.toHex();
     }
+
+    PacketPrinter printer;
+    printer.connect( &pcap, SIGNAL(packetReady(const uchar *)), SLOT(print(const uchar *)) );
 
     pcap.start();
 
