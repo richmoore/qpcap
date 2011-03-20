@@ -97,7 +97,7 @@ int QPcapIpPacket::version() const
 int QPcapIpPacket::headerLength() const
 {
     const iphdr *ip = reinterpret_cast<const iphdr *>(packet);
-    return ip->ihl;
+    return ip->ihl * 4; // The value in the packet is divided by 4
 }
 
 int QPcapIpPacket::protocol() const
@@ -117,3 +117,39 @@ QHostAddress QPcapIpPacket::dest() const
     const iphdr *ip = reinterpret_cast<const iphdr *>(packet);
     return QHostAddress( ntohl(ip->daddr) );
 }
+
+QPcapTcpPacket QPcapIpPacket::toTcpPacket() const
+{
+    if (protocol() != TcpProtocol)
+        return QPcapTcpPacket();
+
+    const uchar *payload = packet + headerLength();
+    return QPcapTcpPacket(payload);
+}
+
+
+//
+// TCP packet
+//
+
+QPcapTcpPacket::QPcapTcpPacket()
+    : packet(0)
+{
+}
+
+QPcapTcpPacket::QPcapTcpPacket( const uchar *pkt )
+    : packet(pkt)
+{
+}
+
+QPcapTcpPacket::~QPcapTcpPacket()
+{
+    // We don't own the packet
+}
+
+bool QPcapTcpPacket::isValid() const
+{
+    return (packet != 0);
+}
+
+

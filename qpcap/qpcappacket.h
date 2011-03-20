@@ -7,6 +7,7 @@
 #include <QString>
 
 class QPcapIpPacket;
+class QPcapTcpPacket;
 
 class QPcapEthernetPacket
 {
@@ -32,6 +33,15 @@ private:
 class QPcapIpPacket
 {
 public:
+    enum IpProtocol {
+        IcmpProtocol = 1,
+        IgmpProtocol = 2,
+        TcpProtocol = 6,
+        UdpProtocol = 17,
+        Ip6Protocol = 41,
+        Icmp6Protocol = 58
+    };
+
     QPcapIpPacket();
     QPcapIpPacket( const uchar *packet );
 
@@ -46,6 +56,22 @@ public:
 
     QHostAddress source() const;
     QHostAddress dest() const;
+
+    QPcapTcpPacket toTcpPacket() const;
+
+private:
+    const uchar *packet;
+};
+
+class QPcapTcpPacket
+{
+public:
+    QPcapTcpPacket();
+    QPcapTcpPacket( const uchar *packet );
+
+    ~QPcapTcpPacket();
+
+    bool isValid() const;
 
 private:
     const uchar *packet;
