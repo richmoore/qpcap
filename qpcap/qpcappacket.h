@@ -57,6 +57,7 @@ public:
     QHostAddress source() const;
     QHostAddress dest() const;
 
+    bool isTcpPacket() const;
     QPcapTcpPacket toTcpPacket() const;
 
 private:
@@ -72,6 +73,12 @@ public:
     ~QPcapTcpPacket();
 
     bool isValid() const;
+
+    ushort sourcePort() const;
+    ushort destPort() const;
+
+    uint sequenceNumber() const;
+    uint ackNumber() const;
 
 private:
     const uchar *packet;

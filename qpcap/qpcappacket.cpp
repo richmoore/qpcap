@@ -3,6 +3,7 @@
 #include <arpa/inet.h>
 #include <netinet/ether.h>
 #include <netinet/ip.h>
+#include <netinet/tcp.h>
 
 #include "qpcappacket.h"
 
@@ -118,6 +119,11 @@ QHostAddress QPcapIpPacket::dest() const
     return QHostAddress( ntohl(ip->daddr) );
 }
 
+bool QPcapIpPacket::isTcpPacket() const
+{
+    return (protocol() == TcpProtocol);
+}
+
 QPcapTcpPacket QPcapIpPacket::toTcpPacket() const
 {
     if (protocol() != TcpProtocol)
@@ -150,6 +156,30 @@ QPcapTcpPacket::~QPcapTcpPacket()
 bool QPcapTcpPacket::isValid() const
 {
     return (packet != 0);
+}
+
+ushort QPcapTcpPacket::sourcePort() const
+{
+    const tcphdr *tcp = reinterpret_cast<const tcphdr *>(packet);
+    return ntohs(tcp->source);
+}
+
+ushort QPcapTcpPacket::destPort() const
+{
+    const tcphdr *tcp = reinterpret_cast<const tcphdr *>(packet);
+    return ntohs(tcp->dest);
+}
+
+uint QPcapTcpPacket::sequenceNumber() const
+{
+    const tcphdr *tcp = reinterpret_cast<const tcphdr *>(packet);
+    return ntohl(tcp->seq);
+}
+
+uint QPcapTcpPacket::ackNumber() const
+{
+    const tcphdr *tcp = reinterpret_cast<const tcphdr *>(packet);
+    return ntohl(tcp->ack_seq);
 }
 
 

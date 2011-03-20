@@ -24,5 +24,12 @@ void PacketPrinter::print( const uchar *packet )
         qDebug() << "== IP ==";
         qDebug() << "Source:" << ip.source();
         qDebug() << "Dest:" << ip.dest();
+
+        if (ip.isTcpPacket()) {
+            QPcapTcpPacket tcp = ip.toTcpPacket();
+            qDebug() << "== TCP ==";
+            qDebug() << "Source Port:" << tcp.sourcePort();
+            qDebug() << "Dest Port:" << tcp.destPort();
+        }
     }
 }
