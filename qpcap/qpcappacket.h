@@ -5,6 +5,7 @@
 
 #include <QHostAddress>
 #include <QString>
+#include <QByteArray>
 
 class QPcapIpPacket;
 class QPcapTcpPacket;
@@ -57,6 +58,8 @@ public:
     QHostAddress source() const;
     QHostAddress dest() const;
 
+    int length() const;
+
     bool isTcpPacket() const;
     QPcapTcpPacket toTcpPacket() const;
 
@@ -68,7 +71,7 @@ class QPcapTcpPacket
 {
 public:
     QPcapTcpPacket();
-    QPcapTcpPacket( const uchar *packet );
+    QPcapTcpPacket( const uchar *packet, int length );
 
     ~QPcapTcpPacket();
 
@@ -80,8 +83,14 @@ public:
     uint sequenceNumber() const;
     uint ackNumber() const;
 
+    int headerLength() const;
+
+    int dataLength() const;
+    QByteArray data() const;
+
 private:
     const uchar *packet;
+    int length;
 };
 
 #endif // QPCAPPACKET_H_H

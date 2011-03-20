@@ -30,6 +30,11 @@ void PacketPrinter::print( const uchar *packet )
             qDebug() << "== TCP ==";
             qDebug() << "Source Port:" << tcp.sourcePort();
             qDebug() << "Dest Port:" << tcp.destPort();
+
+            if ( tcp.dataLength() ) {
+                qDebug() << "== Data ==";
+                qDebug() << tcp.data();
+            }
         }
     }
 }

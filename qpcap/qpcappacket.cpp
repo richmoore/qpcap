@@ -119,6 +119,12 @@ QHostAddress QPcapIpPacket::dest() const
     return QHostAddress( ntohl(ip->daddr) );
 }
 
+int QPcapIpPacket::length() const
+{
+    const iphdr *ip = reinterpret_cast<const iphdr *>(packet);
+    return ntohs( ip->tot_len );
+}
+
 bool QPcapIpPacket::isTcpPacket() const
 {
     return (protocol() == TcpProtocol);
@@ -130,7 +136,7 @@ QPcapTcpPacket QPcapIpPacket::toTcpPacket() const
         return QPcapTcpPacket();
 
     const uchar *payload = packet + headerLength();
-    return QPcapTcpPacket(payload);
+    return QPcapTcpPacket(payload, length()-headerLength());
 }
 
 
@@ -139,12 +145,12 @@ QPcapTcpPacket QPcapIpPacket::toTcpPacket() const
 //
 
 QPcapTcpPacket::QPcapTcpPacket()
-    : packet(0)
+    : packet(0), length(0)
 {
 }
 
-QPcapTcpPacket::QPcapTcpPacket( const uchar *pkt )
-    : packet(pkt)
+QPcapTcpPacket::QPcapTcpPacket( const uchar *pkt, int len )
+    : packet(pkt), length(len)
 {
 }
 
@@ -182,4 +188,19 @@ uint QPcapTcpPacket::ackNumber() const
     return ntohl(tcp->ack_seq);
 }
 
+int QPcapTcpPacket::headerLength() const
+{
+    const tcphdr *tcp = reinterpret_cast<const tcphdr *>(packet);
+    return tcp->doff * 4; // The value in the packet is divided by 4
+}
+
+int QPcapTcpPacket::dataLength() const
+{
+    return length-headerLength();
+}
+
+QByteArray QPcapTcpPacket::data() const
+{
+    return QByteArray::fromRawData( reinterpret_cast<const char *>(packet+headerLength()), dataLength() );
+}
 
