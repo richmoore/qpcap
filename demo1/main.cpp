@@ -3,7 +3,6 @@
 #include <QDebug>
 
 #include "qpcap.h"
-#include "qpcappacket.h"
 
 #include "packetprinter.h"
 

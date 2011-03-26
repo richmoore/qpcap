@@ -3,7 +3,9 @@
 #include <QDebug>
 
 #include "qpcap.h"
-#include "qpcappacket.h"
+#include "qpcapethernetpacket.h"
+#include "qpcapippacket.h"
+#include "qpcaptcppacket.h"
 
 int main(int argc, char **argv)
 {
@@ -54,7 +56,7 @@ int main(int argc, char **argv)
         qDebug() << "Source:" << ether.sourceHost();
         qDebug() << "Dest:" << ether.destHost();
 
-        QPcapIpPacket ip = ether.ipPacket();
+        QPcapIpPacket ip = ether.toIpPacket();
         qDebug() << "Source:" << ip.source();
         qDebug() << "Dest:" << ip.dest();
 

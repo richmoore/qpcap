@@ -5,7 +5,9 @@
 #include <netinet/ip.h>
 #include <netinet/tcp.h>
 
-#include "qpcappacket.h"
+#include "qpcapethernetpacket.h"
+#include "qpcapippacket.h"
+#include "qpcaptcppacket.h"
 
 QPcapEthernetPacket::QPcapEthernetPacket()
     : packet(0)

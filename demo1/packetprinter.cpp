@@ -1,6 +1,9 @@
 #include <QDebug>
 
-#include "qpcappacket.h"
+#include "qpcapethernetpacket.h"
+#include "qpcapippacket.h"
+#include "qpcaptcppacket.h"
+
 #include "packetprinter.h"
 
 PacketPrinter::PacketPrinter( QObject *parent )
