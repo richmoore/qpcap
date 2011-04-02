@@ -155,6 +155,7 @@ void QPcap::packet_callback( uchar *self, const pcap_pkthdr *header, const uchar
 
     qpcap->packetReady();
     qpcap->packetReady( qpcap->d->packet );
+    qpcap->packetReady( qpcap->d->header, qpcap->d->packet );
 }
 
 void QPcap::dataAvailable()

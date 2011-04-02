@@ -56,6 +56,7 @@ public:
 signals:
     void packetReady();
     void packetReady( const uchar *packet );
+    void packetReady( QPcapHeader header, const uchar *packet );
 
 private slots:
     void dataAvailable();
