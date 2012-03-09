@@ -6,6 +6,7 @@
 #include <QHostAddress>
 
 class QPcapTcpPacket;
+class QPcapUdpPacket;
 
 class QPcapIpPacket
 {
@@ -38,6 +39,9 @@ public:
 
     bool isTcpPacket() const;
     QPcapTcpPacket toTcpPacket() const;
+
+    bool isUdpPacket() const;
+    QPcapUdpPacket toUdpPacket() const;
 
 private:
     const uchar *packet;

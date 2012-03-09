@@ -4,10 +4,12 @@
 #include <netinet/ether.h>
 #include <netinet/ip.h>
 #include <netinet/tcp.h>
+#include <netinet/udp.h>
 
 #include "qpcapethernetpacket.h"
 #include "qpcapippacket.h"
 #include "qpcaptcppacket.h"
+#include "qpcapudppacket.h"
 
 QPcapEthernetPacket::QPcapEthernetPacket()
     : packet(0)
@@ -141,6 +143,20 @@ QPcapTcpPacket QPcapIpPacket::toTcpPacket() const
     return QPcapTcpPacket(payload, length()-headerLength());
 }
 
+bool QPcapIpPacket::isUdpPacket() const
+{
+    return (protocol() == UdpProtocol);
+}
+
+QPcapUdpPacket QPcapIpPacket::toUdpPacket() const
+{
+    if (protocol() != UdpProtocol)
+        return QPcapUdpPacket();
+
+    const uchar *payload = packet + headerLength();
+    return QPcapUdpPacket(payload, length()-headerLength());
+}
+
 
 //
 // TCP packet
@@ -204,5 +220,51 @@ int QPcapTcpPacket::dataLength() const
 QByteArray QPcapTcpPacket::data() const
 {
     return QByteArray::fromRawData( reinterpret_cast<const char *>(packet+headerLength()), dataLength() );
+}
+
+//
+// UDP packet
+//
+
+QPcapUdpPacket::QPcapUdpPacket()
+    : packet(0), length(0)
+{
+}
+
+QPcapUdpPacket::QPcapUdpPacket( const uchar *pkt, int len )
+    : packet(pkt), length(len)
+{
+}
+
+QPcapUdpPacket::~QPcapUdpPacket()
+{
+    // We don't own the packet
+}
+
+bool QPcapUdpPacket::isValid() const
+{
+    return (packet != 0);
+}
+
+ushort QPcapUdpPacket::sourcePort() const
+{
+    const udphdr *udp = reinterpret_cast<const udphdr *>(packet);
+    return ntohs(udp->source);
+}
+
+ushort QPcapUdpPacket::destPort() const
+{
+    const udphdr *udp = reinterpret_cast<const udphdr *>(packet);
+    return ntohs(udp->dest);
+}
+
+int QPcapUdpPacket::dataLength() const
+{
+    return length-8;
+}
+
+QByteArray QPcapUdpPacket::data() const
+{
+    return QByteArray::fromRawData( reinterpret_cast<const char *>(packet+8), dataLength() );
 }
 
