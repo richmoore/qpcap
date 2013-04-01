@@ -57,7 +57,7 @@ QString QPcapEthernetPacket::sourceHost() const
     const ether_header *ether = reinterpret_cast<const ether_header *>(packet);
     const ether_addr *src = reinterpret_cast<const ether_addr *>(&ether->ether_shost);
 
-    return QString::fromAscii( ether_ntoa(src) );
+    return QString::fromLatin1( ether_ntoa(src) );
 }
 
 QString QPcapEthernetPacket::destHost() const
@@ -65,7 +65,7 @@ QString QPcapEthernetPacket::destHost() const
     const ether_header *ether = reinterpret_cast<const ether_header *>(packet);
     const ether_addr *dst = reinterpret_cast<const ether_addr *>(&ether->ether_dhost);
 
-    return QString::fromAscii( ether_ntoa(dst) );
+    return QString::fromLatin1( ether_ntoa(dst) );
 }
 
 ushort QPcapEthernetPacket::frameType() const
