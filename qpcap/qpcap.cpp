@@ -19,6 +19,7 @@
  */
 
 #include <QDebug>
+#include <QMutex>
 #include <QSocketNotifier>
 
 #include <pcap.h>
@@ -26,6 +27,8 @@
 #include "qpcap.h"
 
 static const int PCAP_TIMEOUT = 10000;
+
+static QMutex sharedMutex;
 
 struct QPcapPrivate
 {
@@ -145,6 +148,8 @@ bool QPcap::close()
 
 bool QPcap::setFilter( const QString &filterexp )
 {
+    QMutexLocker locker(&sharedMutex);
+
     // TODO: sort out the netmask argument
     int status = pcap_compile(d->handle, &d->filter, filterexp.toLocal8Bit().constData(), 0, 0);
     if (status != 0)
