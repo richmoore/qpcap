@@ -49,6 +49,8 @@ public:
 
     int version() const;
     int headerLength() const;
+    bool moreFragments() const;
+    ushort fragmentOffset() const;
 
     int protocol() const;
 

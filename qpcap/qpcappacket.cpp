@@ -31,6 +31,12 @@
 #include "qpcaptcppacket.h"
 #include "qpcapudppacket.h"
 
+// Big endian.
+#define RESERVED_FRAGMENTS 0x8000
+#define DONT_FRAGMENT      0x4000
+#define MORE_FRAGMENTS     0x2000
+#define FRAGMENT_OFFSET    0x1fff
+
 QPcapEthernetPacket::QPcapEthernetPacket()
     : packet(0)
 {
@@ -127,6 +133,20 @@ int QPcapIpPacket::headerLength() const
 {
     const iphdr *ip = reinterpret_cast<const iphdr *>(packet);
     return ip->ihl * 4; // The value in the packet is divided by 4
+}
+
+bool QPcapIpPacket::moreFragments() const
+{
+    const iphdr *ip = reinterpret_cast<const iphdr *>(packet);
+    ushort offset = ip->frag_off & MORE_FRAGMENTS;
+    return offset;
+}
+
+u_int16_t QPcapIpPacket::fragmentOffset() const
+{
+    const iphdr *ip = reinterpret_cast<const iphdr *>(packet);
+    ushort offset = ip->frag_off & FRAGMENT_OFFSET;
+    return offset;
 }
 
 int QPcapIpPacket::protocol() const
