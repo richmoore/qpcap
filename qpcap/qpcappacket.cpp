@@ -39,6 +39,10 @@ QPcapEthernetPacket::QPcapEthernetPacket()
 QPcapEthernetPacket::QPcapEthernetPacket( const uchar *pkt )
     : packet(pkt)
 {
+    if (ETHERTYPE_VLAN == frameType())
+    {
+        packet += 4;
+    }
 }
 
 QPcapEthernetPacket::~QPcapEthernetPacket()
