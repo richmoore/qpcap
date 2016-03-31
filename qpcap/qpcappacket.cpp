@@ -167,6 +167,11 @@ QHostAddress QPcapIpPacket::dest() const
     return QHostAddress( ntohl(ip->daddr) );
 }
 
+QByteArray QPcapIpPacket::data() const
+{
+    return QByteArray( reinterpret_cast<const char*>(packet), length() );
+}
+
 int QPcapIpPacket::length() const
 {
     const iphdr *ip = reinterpret_cast<const iphdr *>(packet);

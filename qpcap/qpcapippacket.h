@@ -58,6 +58,7 @@ public:
     QHostAddress dest() const;
 
     int length() const;
+    QByteArray data() const;
 
     bool isTcpPacket() const;
     QPcapTcpPacket toTcpPacket() const;
